@@ -10,12 +10,19 @@ data("ThreeCars")
 
 dataPanel = tabPanel(title = "Stat2Data Package", 
                      sidebarLayout(
-                         sidebarPanel(),
+                         sidebarPanel(selectInput(inputId = "vars", label = "Select the variable", choices = c("CarType"=1, "Price"=2,
+                                                                                                               "Age"=3, "Mileage"=4,
+                                                                                                               "Car"=5, "Porsche"=6,
+                                                                                                               "Jaguar"=7, "BMW"=8))),
                          mainPanel(
-                             p("In the following presentation we will do a simple analysis of the ``ThreeCars`` data set from the ``Stat2Data`` package, which compare prices for Porsche, Jaguar, and BMW cars offered for sale at an internet site.
-                         Student project data collected from autotrader.com in Spring 2007.")
+                             p("In the following presentation we will do a simple analysis of the", code("ThreeCars"), "data set from the", code("Stat2Data"), "package, which compare prices for Porsche, Jaguar, and BMW cars offered for sale at an internet site."),
+                             p("Student project data collected from autotrader.com in Spring 2007."),
+                             dataTableOutput("data"),
+                             verbatimTextOutput("info")
                          ))
                      )
+
+
                      
 # Define UI for application that draws a histogram
 ui <- navbarPage("shiny App",
@@ -23,7 +30,16 @@ ui <- navbarPage("shiny App",
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
+  
+  output$info <- renderPrint({
+    summary(ThreeCars[, as.numeric(input$vars)])
+  })
+  
+  output$data <- renderDataTable({
+    ThreeCars
+  })
+  
+  
 }
 
 # Run the application 
