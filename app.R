@@ -46,10 +46,13 @@ regPanel <- tabPanel(title = "A simple regression",
                      useShinyjs(),
                      sidebarLayout(
                        sidebarPanel(
-                         
+                         radioButtons("target", label = "Select the target variable:", choices = c("Price", "Age", "Mileage")),
+                         radioButtons("pred", label = "Select the predictor variable:", choices = c("Price", "Age", "Mileage")),
+                         withMathJax("$$\\text{Whose Pearson's correlation coefficient } R^2 \\text{ is: }$$"),
+                         verbatimTextOutput("rsquared")
                        ),
                        mainPanel(
-                         
+                         plotlyOutput("plotly")
                        )
                      )
                      )
@@ -83,6 +86,23 @@ server <- function(input, output) {
       theme_bw()
     
     ggarrange(p1, p2)
+  })
+  
+  output$plotly <- renderPlotly({
+    form <- as.formula(paste(input$target, " ~ ", input$pred))
+    fit <- lm(form, data = ThreeCars)
+    
+    ggplot(data = ThreeCars, aes_string(x = input$pred, y = input$target)) +
+      geom_point(aes(colour = CarType)) + 
+      geom_smooth(method = "lm") +
+      theme_bw()
+  })
+  
+  target <- reactive(eval(parse(text=paste(input$target))))
+  pred <- reactive(eval(parse(text=paste(input$pred))))
+  
+  output$rsquared <- renderPrint({
+    round(cor(target, pred),4)
   })
   
 }
