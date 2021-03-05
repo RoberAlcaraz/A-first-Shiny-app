@@ -20,15 +20,46 @@ dataPanel = tabPanel(title = "Stat2Data Package",
                          mainPanel(
                              p("In the following presentation we will do a simple analysis of the", code("ThreeCars"), "data set from the", code("Stat2Data"), "package, which compare prices for Porsche, Jaguar, and BMW cars offered for sale at an internet site."),
                              p("Student project data collected from autotrader.com in Spring 2007."),
+                             h3("Data frame description"),
                              dataTableOutput("data")
                          ))
                      )
 
+plotPanel <- tabPanel(title = "Plots of the variables",
+                      useShinyjs(),
+                      sidebarLayout(
+                        position = "right",
+                        sidebarPanel(
+                          h4("Select the variable to be plotted in the boxplot"),
+                          selectInput("box_var", label = "", choices = c("Price", "Age", "Mileage")),
+                          h4("Select the variable and the number of bins to be plotted in the histogram"),
+                          selectInput("hist_var", label = "", choices = c("Price", "Age", "Mileage")),
+                          sliderInput("n_bins", label = NULL, min = 2, max = 30, value = 10)
+                        ),
+                        mainPanel(
+                          plotOutput("plot")
+                        )
+                        )
+                      )
+
+regPanel <- tabPanel(title = "A simple regression",
+                     useShinyjs(),
+                     sidebarLayout(
+                       sidebarPanel(
+                         
+                       ),
+                       mainPanel(
+                         
+                       )
+                     )
+                     )
 
                      
 # Define UI for application that draws a histogram
-ui <- navbarPage("shiny App",
-                 dataPanel)
+ui <- navbarPage("Roberto J. Alcaraz Molina",
+                 dataPanel,
+                 plotPanel,
+                 regPanel)
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -41,6 +72,18 @@ server <- function(input, output) {
     ThreeCars
   })
   
+  
+  output$plot <- renderPlot({
+    p1 <- ggplot(data = ThreeCars, aes_string(x = "CarType", y = input$box_var, color = "CarType")) +
+      geom_boxplot() +
+      theme_bw()
+    
+    p2 <- ggplot(data = ThreeCars, aes_string(x = input$hist_var)) +
+      geom_histogram(bins = input$n_bins, fill = "orange", color = "black") +
+      theme_bw()
+    
+    ggarrange(p1, p2)
+  })
   
 }
 
