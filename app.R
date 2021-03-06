@@ -14,8 +14,16 @@ dataPanel = tabPanel(title = "Stat2Data Package",
                                                                                                                "Age"=3, "Mileage"=4,
                                                                                                                "Car"=5, "Porsche"=6,
                                                                                                                "Jaguar"=7, "BMW"=8)),
-                                      HTML(paste0("<ul><li>", code("CarType"), ": BMW, Jaguar, or Porsche.</li><li>", code("Price"), ": Asking price (in $1,000's).</li><li>", code("Age"), ": Age of the car (in years).</li><li>", code("Mileage"), ": Previous miles driven (in 1,000's).</li><li>", code("Car"), ": 0=Porsche, 1=Jaguar and 2=BMW. </li><li>", code("Porsche"), ": Indicator with 1=Porsche and 0=otherwise.</li><li>", code("Jaguar"), ": Indicator with 1=Jaguar and 0=otherwise.</li><li>", code("BMW"), ": Indicator with 1=BMW and 0=otherwise.</li>
-</ul>")),
+                                      HTML(paste0("<ul><li>", 
+                                                  code("CarType"), ": BMW, Jaguar, or Porsche.</li><li>", 
+                                                  code("Price"), ": Asking price (in $1,000's).</li><li>", 
+                                                  code("Age"), ": Age of the car (in years).</li><li>", 
+                                                  code("Mileage"), ": Previous miles driven (in 1,000's).</li><li>",
+                                                  code("Car"), ": 0=Porsche, 1=Jaguar and 2=BMW. </li><li>",
+                                                  code("Porsche"), ": Indicator with 1=Porsche and 0=otherwise.</li><li>", 
+                                                  code("Jaguar"), ": Indicator with 1=Jaguar and 0=otherwise.</li><li>", 
+                                                  code("BMW"), ": Indicator with 1=BMW and 0=otherwise.</li></ul>")),
+                                      
                                       verbatimTextOutput("info")),
                          mainPanel(
                              p("In the following presentation we will do a simple analysis of the", code("ThreeCars"), "data set from the", code("Stat2Data"), "package, which compare prices for Porsche, Jaguar, and BMW cars offered for sale at an internet site."),
@@ -46,7 +54,7 @@ regPanel <- tabPanel(title = "A simple regression",
                      useShinyjs(),
                      sidebarLayout(
                        sidebarPanel(
-                         radioButtons("target", label = "Select the target variable:", choices = c("Price", "Age", "Mileage")),
+                         radioButtons("target", label = "Select the target variable:",  choices = c("Price", "Age", "Mileage")),
                          radioButtons("pred", label = "Select the predictor variable:", choices = c("Price", "Age", "Mileage")),
                          withMathJax("$$\\text{Whose Pearson's correlation coefficient } R^2 \\text{ is: }$$"),
                          verbatimTextOutput("rsquared")
@@ -98,11 +106,11 @@ server <- function(input, output) {
       theme_bw()
   })
   
-  target <- reactive(eval(parse(text=paste(input$target))))
-  pred <- reactive(eval(parse(text=paste(input$pred))))
+  cmd = reactive(eval(parse(text=paste(round(cor(ThreeCars[,input$target],
+                                                 ThreeCars[,input$pred]),4),sep=""))));
   
   output$rsquared <- renderPrint({
-    round(cor(target, pred),4)
+    cmd()
   })
   
 }
