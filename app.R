@@ -106,7 +106,7 @@ refPanel <- tabPanel("References",
                      
 # Define UI for application that draws a histogram
 ui <- navbarPage("Roberto J. Alcaraz Molina",
-                 theme = shinytheme("superhero"),
+                 theme = shinytheme("sandstone"),
                  dataPanel,
                  plotPanel,
                  regPanel,
