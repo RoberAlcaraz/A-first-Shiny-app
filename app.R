@@ -4,7 +4,7 @@
 
 pacman::p_load(shiny, tidyverse, ggplot2, magrittr, gapminder, plotly,
                shinythemes, shinyjs, DT, leaflet, knitr, Stat2Data, 
-               dplyr, patchwork, ggpubr, htmlwidgets)
+               dplyr, patchwork, ggpubr, htmlwidgets, shinythemes)
 
 data("ThreeCars")
 
@@ -90,12 +90,28 @@ regPanel <- tabPanel(title = "A simple regression",
                      )
                      )
 
+refPanel <- tabPanel("References",
+                     p(tags$button(
+                       class="btn btn-default", 
+                       `data-toggle`="collapse", 
+                       `data-target`="#collapseExample",
+                       "References")),
+                     div(class="collapse", id="collapseExample",
+                         div(class="card card-body",
+                             includeMarkdown("References.md")
+                             )
+                         )
+                     )
+
                      
 # Define UI for application that draws a histogram
 ui <- navbarPage("Roberto J. Alcaraz Molina",
+                 theme = shinytheme("superhero"),
                  dataPanel,
                  plotPanel,
-                 regPanel)
+                 regPanel,
+                 refPanel
+                 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
