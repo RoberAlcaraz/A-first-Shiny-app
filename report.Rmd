@@ -1,0 +1,42 @@
+---
+title: "**A Simple Regression**"
+subtitle: "**REPORT**"
+author: "Roberto J. Alcaraz Molina"
+date: "7/3/2021"
+output: html_document
+params:
+  target: "Mileage"
+  pred: "Price"
+---
+
+In this last panel we can see the relationship between the variables `Price`, `Age` and `Mileage` by selecting the target variable and the predictor variable. Moreover, each point has a different color depending on the car type. Finally, we can see the Pearson's correlation coefficient between the two selected variables.
+
+```{r, echo=F}
+data("ThreeCars")
+```
+
+The Pearson's correlation coefficient ($R^2$) between the variables `r params$pred` and `r params$target` is `r round(cor(ThreeCars[,params$target], ThreeCars[,params$pred]),4)` and below we can see the plot:
+
+```{r, echo=F, warning=F, message=FALSE}
+form <- as.formula(paste(params$target, " ~ ", params$pred))
+fit <- lm(form, data = ThreeCars)
+
+ggplot(data = ThreeCars, aes_string(x = params$pred, y = params$target)) +
+  geom_point(aes(colour = CarType)) + 
+  geom_smooth(method = "lm") +
+  theme_bw()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
